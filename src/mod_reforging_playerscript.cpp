@@ -6,6 +6,8 @@
 #include "DatabaseEnv.h"
 #include "Player.h"
 #include "item_reforge.h"
+#include "Config.h"
+#include <Chat.h>
 
 class mod_reforging_playerscript : public PlayerScript
 {
@@ -50,6 +52,15 @@ public:
 
     void OnPlayerLogin(Player* player) override
     {
+        if (sConfigMgr->GetOption<bool>("Reforging.AnnounceEnable", true))
+        {
+			uint32 loc = player->GetSession()->GetSessionDbLocaleIndex();
+            if (loc == 4)
+                ChatHandler(player->GetSession()).SendSysMessage("|cff00ff00本服务端已加载|r |cff00ccff装备重铸|r |cff00ff00模块.|r");
+            else
+				ChatHandler(player->GetSession()).SendSysMessage("This server is running the |cff4CFF00Item Reforging |rmodule.");
+        }
+
         new SendReforgePackets(player);
     }
 

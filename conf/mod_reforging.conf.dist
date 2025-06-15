@@ -17,6 +17,15 @@
 Reforging.Enable = 1
 
 #
+#    Reforging.AnnounceEnable
+#        Description: Enable Announce module
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+Reforging.AnnounceEnable = 1
+
+#
 #    Reforging.ReforgeableStats
 #        Description: Stats that can be reforged. These are usually secondary stats like spirit, hit rating, etc. These correspond
 #                     to ItemModType enum in ItemTemplate.h. Choose a MAXIMUM of 15 stats.

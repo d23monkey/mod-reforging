@@ -26,7 +26,7 @@ private:
 
         const std::vector<uint32>& reforgeableStats = sItemReforge->GetReforgeableStats();
         std::ostringstream oss;
-        oss << "Reforgeable stats: ";
+        oss << "可重铸属性: ";
         bool hasStats = false;
         for (uint32 i = 0; i < reforgeableStats.size(); i++)
         {
@@ -48,21 +48,21 @@ private:
             oss << sItemReforge->GetSlotName(slot);
 
             if (item == nullptr)
-                oss << " [" << ItemReforge::TextRed("NO ITEM") << "]";
+                oss << " [" << ItemReforge::TextRed("没有装备") << "]";
             else
             {
                 if (sItemReforge->IsAlreadyReforged(item))
-                    oss << " [" << ItemReforge::TextRed("ALREADY REFORGED") << "]";
+                    oss << " [" << ItemReforge::TextRed("已重铸") << "]";
                 else if (!sItemReforge->IsReforgeable(player, item))
-                    oss << " [" << ItemReforge::TextRed("NOT REFORGEABLE") << "]";
+                    oss << " [" << ItemReforge::TextRed("不可重铸") << "]";
                 else
-                    oss << " [" << ItemReforge::TextGreen("REFORGEABLE") << "]";
+                    oss << " [" << ItemReforge::TextGreen("可重铸") << "]";
             }
 
             AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, oss.str(), GOSSIP_SENDER_MAIN + 1, slot);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Go Back", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "返回", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
@@ -72,17 +72,17 @@ private:
     {
         if (item == nullptr)
         {
-            ItemReforge::SendMessage(player, "There is no equipped item in that slot.");
+            ItemReforge::SendMessage(player, "该槽位没有装备物品.");
             return false;
         }
         else if (sItemReforge->IsAlreadyReforged(item))
         {
-            ItemReforge::SendMessage(player, "This item was already reforged.");
+            ItemReforge::SendMessage(player, "这个物品已经重铸过了.");
             return false;
         }
         else if (!sItemReforge->IsReforgeable(player, item))
         {
-            ItemReforge::SendMessage(player, "This item is not reforgeable.");
+            ItemReforge::SendMessage(player, "这个物品不可重铸.");
             return false;
         }
 
@@ -102,9 +102,9 @@ private:
 
         std::vector<_ItemStat> itemStats = sItemReforge->LoadItemStatInfo(item, true);
         for (const _ItemStat& stat : itemStats)
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "Reforge " + sItemReforge->StatTypeToString(stat.ItemStatType), GOSSIP_SENDER_MAIN + 2, stat.ItemStatType);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "重铸 " + sItemReforge->StatTypeToString(stat.ItemStatType), GOSSIP_SENDER_MAIN + 2, stat.ItemStatType);
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Go Back", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "返回", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
@@ -130,11 +130,11 @@ private:
         uint32 taken = sItemReforge->CalculateReforgePct(toReforgeStat->ItemStatValue);
         uint32 newVal = toReforgeStat->ItemStatValue - taken;
         std::ostringstream oss;
-        oss << "Will take " << ItemReforge::TextRed(Acore::ToString((uint32)sItemReforge->GetPercentage()) + "%") << " from " << sItemReforge->StatTypeToString(stat);
+        oss << "将扣除 " << ItemReforge::TextRed(Acore::ToString((uint32)sItemReforge->GetPercentage()) + "%") << sItemReforge->StatTypeToString(stat);
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, stat);
 
         oss.str("");
-        oss << sItemReforge->StatTypeToString(stat) << " value after reforge: ";
+        oss << sItemReforge->StatTypeToString(stat) << " 重铸后的属性值: ";
         oss << ItemReforge::TextRed(Acore::ToString(newVal)) << " (-" << Acore::ToString(taken) << ")";
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, stat);
 
@@ -143,10 +143,10 @@ private:
             if (sItemReforge->FindItemStat(itemStats, rstat) != nullptr)
                 continue;
 
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, ItemReforge::TextGreen("+" + Acore::ToString(taken) + " " + sItemReforge->StatTypeToString(rstat)), GOSSIP_SENDER_MAIN + 10 + stat, rstat, "Are you sure you want to reforge this item?", 0, false);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, ItemReforge::TextGreen("+" + Acore::ToString(taken) + " " + sItemReforge->StatTypeToString(rstat)), GOSSIP_SENDER_MAIN + 10 + stat, rstat, "你确定要重铸这个物品吗?", 0, false);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Go Back", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + 100);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "返回", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + 100);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
@@ -164,19 +164,19 @@ private:
             oss << sItemReforge->GetSlotName(slot);
 
             if (item == nullptr)
-                oss << " [" << ItemReforge::TextRed("NO ITEM") << "]";
+                oss << " [" << ItemReforge::TextRed("没有装备") << "]";
             else
             {
                 if (sItemReforge->IsAlreadyReforged(item))
-                    oss << " [" << ItemReforge::TextGreen("REFORGED") << "]";
+                    oss << " [" << ItemReforge::TextGreen("已重铸") << "]";
                 else
-                    oss << " [" << ItemReforge::TextRed("NOT REFORGED") << "]";
+                    oss << " [" << ItemReforge::TextRed("未重铸") << "]";
             }
 
             AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, oss.str(), GOSSIP_SENDER_MAIN + 3, slot);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Go Back", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "返回", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
@@ -203,16 +203,16 @@ private:
             return CloseGossip(player, false);
 
         std::ostringstream oss;
-        oss << "Will restore " << sItemReforge->StatTypeToString(decreasedStat->ItemStatType) << " to " << ItemReforge::TextGreen(Acore::ToString(decreasedStat->ItemStatValue));
+        oss << "将恢复 " << sItemReforge->StatTypeToString(decreasedStat->ItemStatType) << " 至 " << ItemReforge::TextGreen(Acore::ToString(decreasedStat->ItemStatValue));
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, oss.str(), GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
 
         oss.str("");
         oss << ItemReforge::TextRed("-" + Acore::ToString(reforging->stat_value) + " " + sItemReforge->StatTypeToString(reforging->stat_increase));
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, oss.str(), GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
 
-        AddGossipItemFor(player, GOSSIP_ICON_BATTLE, ItemReforge::TextRed("[RESTORE]"), GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure?", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_BATTLE, ItemReforge::TextRed("[恢复]"), GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF + 1, "你确定吗?", 0, false);
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Go Back", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "返回", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
@@ -223,13 +223,13 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (!sItemReforge->GetEnabled())
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505NOT AVAILABLE|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505不可用|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
         else
         {
-            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "Select equipment slot to reforge", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "Remove reforge from items", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "选择要重铸的装备槽位", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "移除物品的重铸效果", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
         }
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Nevermind", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "再见", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
     }
@@ -304,7 +304,7 @@ public:
             uint32 decreaseStat = sender - (GOSSIP_SENDER_MAIN + 10);
             uint32 increaseStat = action;
             if (!sItemReforge->Reforge(player, itemMap[player->GetGUID().GetCounter()], decreaseStat, increaseStat))
-                ItemReforge::SendMessage(player, "Could not reforge item, try again.");
+                ItemReforge::SendMessage(player, "无法重铸物品，请再试一次.");
             else
                 sItemReforge->VisualFeedback(player);
 
